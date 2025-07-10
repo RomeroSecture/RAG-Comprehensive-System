@@ -1,0 +1,1217 @@
+RAG Comprehensive System - Complete Project Specification
+🎯 Objetivo del Proyecto
+Crear un sistema RAG (Retrieval-Augmented Generation) completo, moderno y escalable que implemente todas las técnicas avanzadas de recuperación de información y generación aumentada, sin componentes de agentes complejos. El foco está en crear la mejor implementación posible de RAG con todas sus variantes y optimizaciones.
+📋 Funcionalidades Core del Sistema RAG
+1. Ingesta y Procesamiento de Documentos
+
+Parsers multi-formato: PDF, DOCX, TXT, Markdown, HTML, JSON, CSV, XLSX
+Chunking strategies:
+
+Fixed-size chunking con overlap
+Semantic chunking usando modelos de embedding
+Recursive character splitting
+Token-based chunking
+Document structure-aware chunking (headers, paragraphs)
+
+
+Metadata extraction: autor, fecha, tipo de documento, secciones, entidades
+Content preprocessing: limpieza, normalización, detección de idioma
+OCR integration: para documentos escaneados usando Tesseract/PaddleOCR
+
+2. Sistema de Embeddings Avanzado
+
+Multiple embedding models:
+
+OpenAI text-embedding-3-large/small
+Sentence Transformers (multilingual)
+Cohere embeddings
+Azure OpenAI embeddings
+
+
+Embedding optimization:
+
+Dimension reduction con PCA/UMAP
+Embedding fine-tuning para dominio específico
+Hybrid embeddings (dense + sparse)
+Embedding caching y batch processing
+
+
+Multi-language support: embeddings específicos por idioma
+
+3. Vector Store y Retrieval Engine
+
+Vector databases:
+
+PostgreSQL + pgvector (principal)
+Qdrant (alternativa cloud-native)
+FAISS (para experimentación local)
+Infinity (tensor-based search optimized)
+
+
+Advanced retrieval strategies (2025 cutting-edge):
+
+Semantic similarity search (cosine, dot product)
+Hybrid search (vector + keyword/BM25 + fusion)
+Multi-query retrieval con query expansion automática
+Parent-child chunking retrieval
+Self-query retrieval con metadata filtering avanzado
+Contextual compression post-retrieval
+Re-ranking multi-stage:
+
+Cross-encoders para máxima precisión
+ColBERT late-interaction (tensor-based) para eficiencia
+Multi-vector models con bag-of-embeddings
+LLM-based reranking (RankGPT approach)
+
+
+RAG-Fusion: reciprocal rank fusion con multiple queries
+Fast GraphRAG: PageRank-enhanced knowledge graph retrieval
+MMR (Maximal Marginal Relevance) para diversidad
+Recursive retrieval: iterative deepening para queries complejas
+
+
+
+4. Query Processing y Enhancement
+
+Query analysis:
+
+Intent detection
+Entity extraction
+Query classification (factual, analytical, comparative)
+
+
+Query enhancement:
+
+Query expansion con sinónimos
+Multi-query generation para perspectivas diferentes
+Query rewriting para mejor matching
+Hypothetical Document Embeddings (HyDE)
+
+
+Query routing: dirigir queries a diferentes retrieval strategies
+
+5. Advanced RAG Orchestration Engine
+
+RAG Pipelines (State-of-the-art 2025):
+
+Naive RAG: retrieve → generate
+Advanced RAG: query enhancement → multi-retrieval → re-ranking → generation
+Modular RAG: components intercambiables según requirements
+Adaptive RAG: selección dinámica de strategy basada en query complexity
+Self-RAG: self-reflective mechanism con dynamic retrieval decisions
+Corrective RAG: evaluación y corrección automática del retrieval process
+GraphRAG: knowledge graph-enhanced retrieval para complex reasoning
+Long RAG: manejo efectivo de documentos largos sin chunking tradicional
+
+
+Context optimization:
+
+Context window management inteligente
+Relevance scoring y filtering avanzado
+Context compression y summarization
+Multi-hop reasoning support
+Temporal context awareness
+
+
+
+6. Generation Engine
+
+LLM integration:
+
+OpenAI GPT-4/GPT-3.5
+Anthropic Claude
+Local models via Ollama
+Azure OpenAI
+
+
+Prompt engineering:
+
+Context-aware prompts
+Chain-of-thought prompting
+Few-shot examples integration
+Domain-specific prompt templates
+
+
+Response optimization:
+
+Citation generation
+Confidence scoring
+Answer grounding verification
+Multi-perspective synthesis
+
+
+
+7. Evaluation y Quality Assurance
+
+Retrieval metrics:
+
+Precision@K, Recall@K, F1@K
+NDCG (Normalized Discounted Cumulative Gain)
+MRR (Mean Reciprocal Rank)
+
+
+Generation metrics:
+
+RAGAS (RAG Assessment) framework
+Faithfulness scoring
+Answer relevancy
+Context precision/recall
+
+
+End-to-end evaluation:
+
+Ground truth dataset management
+A/B testing framework
+Performance benchmarking
+Human evaluation integration
+
+
+
+9. Multimodal RAG Integration (2025 Innovation)
+
+Vision-Language Models integration:
+
+Support para documentos PDF con imágenes, diagramas, charts
+Multimodal embedding models (voyage-multimodal-3, Llama 3.2 Vision)
+Image description generation con MLLMs
+Visual content análisis y retrieval
+
+
+Multimodal architectures:
+
+Unified embedding space para text + image
+Separate datastores con multimodal reranking
+Cross-modal similarity search
+Video content processing (VideoRAG)
+
+
+Document intelligence:
+
+OCR + layout understanding
+Table extraction y structured data processing
+Mixed content (text + visual) comprehension
+
+
+Tracing completo: request → retrieval → generation → response
+Metrics dashboard: latency, relevance scores, user satisfaction
+Logging estructurado: todas las etapas del pipeline RAG
+Cost tracking: tokens, API calls, compute resources
+Performance profiling: bottleneck identification
+
+🏗️ Arquitectura y Principios de Desarrollo
+Principios de Clean Architecture & DDD
+python# Domain-Driven Design Structure
+domain/               # Pure business logic (no dependencies)
+├── entities/         # Core business entities  
+├── value_objects/    # Immutable value objects
+├── repositories/     # Abstract repository interfaces
+├── services/         # Domain services
+└── events/          # Domain events
+
+application/          # Use cases and orchestration
+├── use_cases/       # Application use cases
+├── dtos/            # Data transfer objects
+├── ports/           # Input/output ports (interfaces)
+└── services/        # Application services
+
+infrastructure/       # External concerns
+├── persistence/     # Database implementations
+├── external/        # Third-party integrations
+├── messaging/       # Event handling
+└── web/            # HTTP/API layer
+
+presentation/        # Controllers and API
+├── api/            # REST endpoints
+├── graphql/        # GraphQL resolvers
+└── middleware/     # Cross-cutting concerns
+SOLID Principles Applied to RAG
+
+Single Responsibility: cada component tiene una única razón para cambiar
+Open/Closed: extensible para nuevas retrieval strategies sin modificar core
+Liskov Substitution: cualquier retriever puede ser reemplazado transparentemente
+Interface Segregation: interfaces específicas por funcionalidad (embedding, ranking, etc.)
+Dependency Inversion: depend on abstractions, not concretions
+
+Clean Code Practices
+python# Example: Clean retrieval interface
+from abc import ABC, abstractmethod
+from typing import List, Protocol
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class RetrievalQuery:
+    text: str
+    max_results: int = 10
+    similarity_threshold: float = 0.7
+    metadata_filters: dict = None
+
+@dataclass(frozen=True) 
+class RetrievedDocument:
+    content: str
+    metadata: dict
+    score: float
+    source: str
+
+class DocumentRetriever(Protocol):
+    async def retrieve(self, query: RetrievalQuery) -> List[RetrievedDocument]:
+        """Retrieve documents matching the query."""
+        ...
+
+# Implementation follows interface segregation
+class SemanticRetriever(DocumentRetriever):
+    def __init__(self, embedding_service: EmbeddingService, vector_store: VectorStore):
+        self._embedding_service = embedding_service
+        self._vector_store = vector_store
+    
+    async def retrieve(self, query: RetrievalQuery) -> List[RetrievedDocument]:
+        embedding = await self._embedding_service.embed_query(query.text)
+        return await self._vector_store.similarity_search(
+            embedding=embedding,
+            limit=query.max_results,
+            threshold=query.similarity_threshold
+        )
+🏗️ Stack Técnico Propuesto
+Backend Core (Production-Ready)
+python# Framework & API
+FastAPI 0.104+ (async/await nativo)
+Pydantic 2.0+ (validación y serialización)
+Dependency Injector (IoC container)
+structlog (structured logging)
+
+# Database & Persistence  
+PostgreSQL 15+ with pgvector extension
+SQLAlchemy 2.0+ (async ORM)
+Alembic (migrations)
+asyncpg (async PostgreSQL driver)
+
+# Caching & Queue
+Redis (caching, sessions, task queue)
+Celery (background tasks)
+RQ (lightweight queue alternative)
+
+# Testing & Quality
+pytest + pytest-asyncio (testing framework)
+coverage.py (code coverage >90%)
+black + isort + flake8 (code formatting)
+mypy (static type checking)
+pre-commit hooks (automated quality checks)
+
+# Monitoring & Observability
+OpenTelemetry (distributed tracing)
+prometheus-client (metrics)
+Sentry (error tracking)
+structlog (structured logging)
+Development Environment & Tools
+yaml# Development Setup
+Docker + Docker Compose (consistent environments)
+Poetry (dependency management)
+Makefile (common commands automation)
+.env files (environment configuration)
+GitHub Actions (CI/CD)
+
+# Code Quality Pipeline
+- Pre-commit hooks: black, isort, flake8, mypy
+- Automated testing: unit, integration, e2e
+- Security scanning: bandit, safety
+- Dependency vulnerability checking
+- Automated documentation generation
+ML & NLP
+sentence-transformers
+transformers (Hugging Face)
+langchain / llama-index (RAG components)
+openai / anthropic (LLM APIs)
+
+### **Frontend Dashboard**
+```typescript
+// Framework
+Next.js 14+ with App Router
+TypeScript 5.0+
+React 18+ (Server Components)
+
+// UI & Visualization  
+Tailwind CSS + shadcn/ui
+Recharts / Chart.js (metrics)
+React Flow (pipeline visualization)
+Monaco Editor (query/prompt editing)
+Three.js (3D knowledge graph visualization)
+
+// State & API
+TanStack Query (server state)
+Zustand (client state)
+Apollo Client (GraphQL subscriptions)
+Socket.io (real-time updates)
+ML & Advanced Processing
+python# Embedding & Reranking
+sentence-transformers
+transformers (Hugging Face)
+colbert-ai (tensor-based reranking)
+jina-colbert-v2 (multilingual)
+
+# RAG Frameworks
+langchain / llama-index (RAG components)
+ragatouille (ColBERT integration)
+llamaindex-reranker
+
+# LLM & Multimodal
+openai / anthropic (LLM APIs)
+torch / torchvision (vision models)
+pillow (image processing)
+opencv-python (computer vision)
+
+# Knowledge Graphs
+networkx (graph processing)
+neo4j (graph database driver)
+spacy (NLP + entity extraction)
+Infrastructure
+yaml# Containerization
+Docker & Docker Compose
+Multi-stage builds
+
+# Deployment
+Kubernetes manifests
+Helm charts
+GitHub Actions CI/CD
+
+# Monitoring
+Prometheus + Grafana
+OpenTelemetry tracing
+ELK Stack (logs)
+📁 Estructura de Proyecto (Clean Architecture)
+rag-comprehensive-system/
+├── pyproject.toml              # Poetry dependencies
+├── Makefile                    # Common commands
+├── docker-compose.yml          # Development environment  
+├── .pre-commit-config.yaml     # Code quality hooks
+├── .github/workflows/          # CI/CD pipelines
+│
+├── src/                        # Source code
+│   ├── domain/                 # Pure business logic
+│   │   ├── entities/           # Core entities
+│   │   │   ├── document.py     # Document entity
+│   │   │   ├── query.py        # Query entity  
+│   │   │   └── retrieval_result.py
+│   │   ├── value_objects/      # Immutable values
+│   │   │   ├── embedding.py    # Embedding value object
+│   │   │   ├── similarity_score.py
+│   │   │   └── retrieval_metadata.py
+│   │   ├── repositories/       # Abstract interfaces
+│   │   │   ├── document_repository.py
+│   │   │   ├── embedding_repository.py
+│   │   │   └── vector_store_repository.py
+│   │   ├── services/           # Domain services
+│   │   │   ├── retrieval_strategy.py
+│   │   │   ├── ranking_service.py
+│   │   │   └── evaluation_service.py
+│   │   └── events/             # Domain events
+│   │       ├── document_indexed.py
+│   │       └── query_processed.py
+│   │
+│   ├── application/            # Use cases
+│   │   ├── use_cases/          # Application use cases
+│   │   │   ├── ingest_document.py
+│   │   │   ├── process_query.py
+│   │   │   ├── evaluate_retrieval.py
+│   │   │   └── configure_strategy.py
+│   │   ├── dtos/               # Data transfer objects
+│   │   │   ├── document_dto.py
+│   │   │   ├── query_dto.py
+│   │   │   └── retrieval_result_dto.py
+│   │   ├── ports/              # Input/output interfaces
+│   │   │   ├── embedding_service.py
+│   │   │   ├── llm_service.py
+│   │   │   └── reranking_service.py
+│   │   └── services/           # Application orchestration
+│   │       ├── rag_orchestrator.py
+│   │       ├── multimodal_processor.py
+│   │       └── evaluation_coordinator.py
+│   │
+│   ├── infrastructure/         # External integrations
+│   │   ├── persistence/        # Database implementations
+│   │   │   ├── postgresql/
+│   │   │   │   ├── models/      # SQLAlchemy models
+│   │   │   │   ├── repositories/ # Repository implementations
+│   │   │   │   └── migrations/  # Alembic migrations
+│   │   │   └── vector_stores/
+│   │   │       ├── pgvector_store.py
+│   │   │       ├── qdrant_store.py
+│   │   │       └── faiss_store.py
+│   │   ├── external/           # Third-party services
+│   │   │   ├── openai/         # OpenAI integration
+│   │   │   ├── anthropic/      # Anthropic integration
+│   │   │   ├── huggingface/    # HuggingFace models
+│   │   │   └── colbert/        # ColBERT integration
+│   │   ├── messaging/          # Event handling
+│   │   │   ├── redis_publisher.py
+│   │   │   └── celery_tasks.py
+│   │   └── monitoring/         # Observability
+│   │       ├── metrics.py
+│   │       ├── tracing.py
+│   │       └── logging.py
+│   │
+│   ├── presentation/           # API layer
+│   │   ├── api/                # REST endpoints
+│   │   │   ├── v1/
+│   │   │   │   ├── documents.py
+│   │   │   │   ├── queries.py
+│   │   │   │   ├── retrieval.py
+│   │   │   │   └── evaluation.py
+│   │   │   └── dependencies.py # Dependency injection
+│   │   ├── graphql/            # GraphQL layer
+│   │   │   ├── schema.py
+│   │   │   ├── resolvers/
+│   │   │   └── subscriptions.py
+│   │   └── middleware/         # Cross-cutting concerns
+│   │       ├── auth.py
+│   │       ├── cors.py
+│   │       ├── rate_limiting.py
+│   │       └── error_handling.py
+│   │
+│   └── shared/                 # Shared utilities
+│       ├── config/             # Configuration
+│       │   ├── settings.py
+│       │   └── database.py
+│       ├── exceptions/         # Custom exceptions
+│       ├── utils/              # Common utilities
+│       └── constants/          # Application constants
+│
+├── tests/                      # Test suite
+│   ├── unit/                   # Unit tests
+│   │   ├── domain/
+│   │   ├── application/
+│   │   └── infrastructure/
+│   ├── integration/            # Integration tests
+│   │   ├── api/
+│   │   ├── database/
+│   │   └── external/
+│   ├── e2e/                    # End-to-end tests
+│   ├── performance/            # Performance tests
+│   └── fixtures/               # Test fixtures
+│
+├── frontend/                   # Next.js application
+│   ├── src/
+│   │   ├── app/                # App Router
+│   │   ├── components/         # Reusable components
+│   │   ├── features/           # Feature modules
+│   │   │   ├── documents/
+│   │   │   ├── search/
+│   │   │   ├── evaluation/
+│   │   │   └── configuration/
+│   │   ├── hooks/              # Custom hooks
+│   │   ├── lib/                # Utilities
+│   │   ├── stores/             # State management
+│   │   └── types/              # TypeScript definitions
+│   ├── tests/                  # Frontend tests
+│   └── public/                 # Static assets
+│
+├── scripts/                    # Utility scripts
+│   ├── setup.sh                # Development setup
+│   ├── migration.py            # Database migration utilities
+│   ├── seed_data.py            # Test data seeding
+│   └── benchmarks/             # Performance benchmarks
+│
+├── docs/                       # Documentation
+│   ├── architecture/           # Architecture decisions
+│   ├── api/                    # API documentation
+│   ├── deployment/             # Deployment guides
+│   └── development/            # Development guides
+│
+├── k8s/                        # Kubernetes manifests
+│   ├── base/                   # Base configurations
+│   ├── overlays/               # Environment-specific
+│   └── monitoring/             # Monitoring stack
+│
+└── docker/                     # Docker configurations
+    ├── Dockerfile.api          # API container
+    ├── Dockerfile.worker       # Worker container
+    └── Dockerfile.frontend     # Frontend container
+🚀 Metodología de Desarrollo y Buenas Prácticas
+Test-Driven Development (TDD)
+python# Example: TDD for retrieval service
+# 1. Write test first
+async def test_semantic_retriever_returns_relevant_documents():
+    # Arrange
+    query = RetrievalQuery(text="machine learning algorithms")
+    expected_documents = [
+        RetrievedDocument(content="ML algorithms overview", score=0.9),
+        RetrievedDocument(content="Deep learning intro", score=0.8)
+    ]
+    
+    # Act
+    results = await semantic_retriever.retrieve(query)
+    
+    # Assert
+    assert len(results) >= 2
+    assert all(doc.score >= query.similarity_threshold for doc in results)
+    assert "machine learning" in results[0].content.lower()
+
+# 2. Implement minimal code to pass
+# 3. Refactor and improve
+Dependency Injection & IoC
+python# Using dependency-injector for clean IoC
+from dependency_injector import containers, providers
+from dependency_injector.wiring import inject, Provide
+
+class Container(containers.DeclarativeContainer):
+    # Configuration
+    config = providers.Configuration()
+    
+    # Infrastructure
+    database = providers.Singleton(Database, url=config.database.url)
+    vector_store = providers.Factory(PgVectorStore, database=database)
+    
+    # Services
+    embedding_service = providers.Factory(
+        OpenAIEmbeddingService, 
+        api_key=config.openai.api_key
+    )
+    
+    # Use cases
+    process_query_use_case = providers.Factory(
+        ProcessQueryUseCase,
+        retriever=providers.Factory(SemanticRetriever, 
+                                  embedding_service=embedding_service,
+                                  vector_store=vector_store)
+    )
+
+# Clean controller with dependency injection
+class QueryController:
+    @inject
+    def __init__(self, 
+                 use_case: ProcessQueryUseCase = Provide[Container.process_query_use_case]):
+        self._use_case = use_case
+Error Handling & Resilience
+python# Custom exceptions hierarchy
+class RAGException(Exception):
+    """Base exception for RAG system"""
+    pass
+
+class RetrievalException(RAGException):
+    """Retrieval-specific errors"""
+    pass
+
+class EmbeddingException(RAGException):
+    """Embedding service errors"""
+    pass
+
+# Retry with exponential backoff
+from tenacity import retry, stop_after_attempt, wait_exponential
+
+class ResilientEmbeddingService:
+    @retry(
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=4, max=10)
+    )
+    async def embed_query(self, text: str) -> Embedding:
+        try:
+            return await self._embedding_client.embed(text)
+        except Exception as e:
+            logger.error(f"Embedding failed: {e}")
+            raise EmbeddingException(f"Failed to embed query: {text[:50]}...")
+Monitoring & Observability
+python# OpenTelemetry tracing
+from opentelemetry import trace
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+
+tracer = trace.get_tracer(__name__)
+
+class TracedRAGOrchestrator:
+    async def process_query(self, query: QueryDTO) -> RetrievalResultDTO:
+        with tracer.start_as_current_span("rag_process_query") as span:
+            span.set_attribute("query.text", query.text[:100])
+            span.set_attribute("query.strategy", query.strategy)
+            
+            # Retrieval phase
+            with tracer.start_as_current_span("retrieval_phase"):
+                documents = await self._retrieve_documents(query)
+                span.set_attribute("retrieval.count", len(documents))
+            
+            # Generation phase  
+            with tracer.start_as_current_span("generation_phase"):
+                response = await self._generate_response(query, documents)
+                span.set_attribute("response.length", len(response.text))
+            
+            return response
+
+# Structured logging
+import structlog
+
+logger = structlog.get_logger()
+
+async def process_document(document_id: str):
+    logger.info("Processing document", document_id=document_id)
+    try:
+        result = await processor.process(document_id)
+        logger.info("Document processed successfully", 
+                   document_id=document_id, 
+                   chunks_created=result.chunk_count)
+    except Exception as e:
+        logger.error("Document processing failed", 
+                    document_id=document_id, 
+                    error=str(e))
+        raise
+Configuration Management
+python# Pydantic settings for type-safe config
+from pydantic import BaseSettings, Field
+from typing import Optional
+
+class DatabaseSettings(BaseSettings):
+    url: str = Field(..., env="DATABASE_URL")
+    pool_size: int = Field(5, env="DB_POOL_SIZE")
+    max_overflow: int = Field(10, env="DB_MAX_OVERFLOW")
+
+class OpenAISettings(BaseSettings):
+    api_key: str = Field(..., env="OPENAI_API_KEY")
+    model: str = Field("text-embedding-3-large", env="OPENAI_EMBEDDING_MODEL")
+    max_retries: int = Field(3, env="OPENAI_MAX_RETRIES")
+
+class Settings(BaseSettings):
+    environment: str = Field("development", env="ENVIRONMENT")
+    debug: bool = Field(False, env="DEBUG")
+    database: DatabaseSettings = DatabaseSettings()
+    openai: OpenAISettings = OpenAISettings()
+    
+    class Config:
+        env_file = ".env"
+        env_nested_delimiter = "__"  # Allows DATABASE__URL format
+Performance & Optimization
+python# Async context managers for resource management
+class AsyncVectorStore:
+    async def __aenter__(self):
+        await self.connect()
+        return self
+    
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.disconnect()
+
+# Caching with Redis
+from functools import wraps
+import redis.asyncio as redis
+
+def cache_embeddings(ttl: int = 3600):
+    def decorator(func):
+        @wraps(func)
+        async def wrapper(self, text: str):
+            cache_key = f"embedding:{hash(text)}"
+            cached = await self.redis.get(cache_key)
+            if cached:
+                return Embedding.parse_raw(cached)
+            
+            result = await func(self, text)
+            await self.redis.setex(cache_key, ttl, result.json())
+            return result
+        return wrapper
+    return decorator
+
+# Connection pooling
+class DatabaseManager:
+    def __init__(self, settings: DatabaseSettings):
+        self.engine = create_async_engine(
+            settings.url,
+            pool_size=settings.pool_size,
+            max_overflow=settings.max_overflow,
+            pool_pre_ping=True,  # Verify connections
+            pool_recycle=3600    # Recycle connections hourly
+        )
+Security Best Practices
+python# API Key management
+from cryptography.fernet import Fernet
+
+class SecureApiKeyManager:
+    def __init__(self, encryption_key: bytes):
+        self.cipher = Fernet(encryption_key)
+    
+    def encrypt_api_key(self, api_key: str) -> str:
+        return self.cipher.encrypt(api_key.encode()).decode()
+    
+    def decrypt_api_key(self, encrypted_key: str) -> str:
+        return self.cipher.decrypt(encrypted_key.encode()).decode()
+
+# Input validation
+from pydantic import validator, Field
+
+class QueryRequest(BaseModel):
+    text: str = Field(..., min_length=1, max_length=10000)
+    max_results: int = Field(10, ge=1, le=100)
+    
+    @validator('text')
+    def sanitize_text(cls, v):
+        # Remove potential injection attempts
+        return v.strip().replace('\x00', '')
+
+# Rate limiting
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+
+limiter = Limiter(key_func=get_remote_address)
+
+@app.post("/query")
+@limiter.limit("10/minute")
+async def process_query(request: Request, query: QueryRequest):
+    return await query_service.process(query)
+🔧 Claude Code Implementation Guidelines
+Development Workflow
+bash# Makefile commands for Claude Code
+.PHONY: setup dev test lint format security deploy
+
+setup:
+	poetry install
+	pre-commit install
+	docker-compose up -d postgres redis
+
+dev:
+	docker-compose up -d
+	poetry run uvicorn src.presentation.api.main:app --reload
+
+test:
+	poetry run pytest tests/ --cov=src --cov-report=html --cov-fail-under=90
+
+lint:
+	poetry run flake8 src tests
+	poetry run mypy src
+	poetry run bandit -r src
+
+format:
+	poetry run black src tests
+	poetry run isort src tests
+
+security:
+	poetry run safety check
+	poetry run bandit -r src/
+
+deploy:
+	docker build -t rag-system:latest .
+	kubectl apply -f k8s/
+Git Workflow & Conventional Commits
+bash# Feature branch naming
+feature/add-self-rag-orchestrator
+bugfix/fix-embedding-cache-timeout
+hotfix/security-api-key-exposure
+
+# Conventional commit messages
+feat(retrieval): add Self-RAG orchestrator with confidence scoring
+fix(embedding): resolve cache timeout in Redis connection
+docs(api): update RAG strategies documentation
+test(integration): add ColBERT reranking integration tests
+refactor(domain): extract retrieval interfaces to separate module
+Code Review Guidelines
+python# Checklist for Pull Requests:
+"""
+## Code Review Checklist
+
+### Architecture & Design
+- [ ] Follows Clean Architecture principles
+- [ ] Proper separation of concerns (Domain/Application/Infrastructure)
+- [ ] SOLID principles applied
+- [ ] Appropriate use of design patterns
+
+### Code Quality
+- [ ] Type hints for all public methods
+- [ ] Docstrings following Google style
+- [ ] Error handling with custom exceptions
+- [ ] Input validation with Pydantic
+- [ ] Async/await used consistently
+
+### Testing
+- [ ] Unit tests cover business logic (>90% coverage)
+- [ ] Integration tests for external dependencies
+- [ ] Mocked external services in tests
+- [ ] Performance tests for critical paths
+
+### Security
+- [ ] No hardcoded secrets or API keys
+- [ ] Input sanitization implemented
+- [ ] Authentication/authorization checked
+- [ ] SQL injection prevention
+
+### Performance
+- [ ] Database queries optimized
+- [ ] Caching strategy implemented
+- [ ] Async operations for I/O bound tasks
+- [ ] Resource cleanup (connection pools, etc.)
+
+### Documentation
+- [ ] API documentation updated
+- [ ] Architecture decisions recorded
+- [ ] Configuration options documented
+"""
+Continuous Integration Pipeline
+yaml# .github/workflows/ci.yml
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg15
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+    
+    - name: Install dependencies
+      run: poetry install
+    
+    - name: Run linting
+      run: |
+        poetry run flake8 src tests
+        poetry run mypy src
+        poetry run black --check src tests
+        poetry run isort --check-only src tests
+    
+    - name: Run security checks
+      run: |
+        poetry run bandit -r src/
+        poetry run safety check
+    
+    - name: Run tests
+      run: |
+        poetry run pytest tests/ \
+          --cov=src \
+          --cov-report=xml \
+          --cov-fail-under=90
+    
+    - name: Upload coverage
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+
+  docker:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Build Docker image
+      run: |
+        docker build -t rag-system:${{ github.sha }} .
+        docker tag rag-system:${{ github.sha }} rag-system:latest
+    
+    - name: Run security scan
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: rag-system:latest
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+Deployment & Infrastructure as Code
+yaml# k8s/base/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rag-api
+  labels:
+    app: rag-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: rag-api
+  template:
+    metadata:
+      labels:
+        app: rag-api
+    spec:
+      containers:
+      - name: api
+        image: rag-system:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: rag-secrets
+              key: database-url
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: rag-secrets
+              key: openai-api-key
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+🔧 Características Técnicas Específicas
+python# Ejemplo de pipeline de ingesta
+class DocumentIngestionPipeline:
+    def __init__(self):
+        self.parsers = ParserRegistry()
+        self.chunkers = ChunkingRegistry()
+        self.embedders = EmbeddingRegistry()
+    
+    async def ingest_document(self, file_path: str, strategy: ChunkingStrategy):
+        # Parse → Chunk → Embed → Store
+        content = await self.parsers.parse(file_path)
+        chunks = await self.chunkers.chunk(content, strategy)
+        embeddings = await self.embedders.embed_batch(chunks)
+        await self.vector_store.upsert(chunks, embeddings)
+2. Advanced Hybrid Retrieval System
+pythonclass HybridRetriever:
+    def __init__(self):
+        self.vector_store = VectorStore()
+        self.keyword_search = KeywordSearch()  # BM25
+        self.tensor_reranker = ColBERTReranker()  # Late interaction
+        self.cross_encoder = CrossEncoder()  # High precision
+        self.graph_retriever = GraphRAGRetriever()
+    
+    async def adaptive_retrieve(self, query: str, complexity: QueryComplexity):
+        if complexity == QueryComplexity.SIMPLE:
+            return await self.vector_store.similarity_search(query)
+        elif complexity == QueryComplexity.COMPLEX:
+            # Multi-way recall with tensor reranking
+            vector_results = await self.vector_store.similarity_search(query, k=50)
+            keyword_results = await self.keyword_search.search(query, k=50)
+            graph_results = await self.graph_retriever.search(query, k=20)
+            
+            # Fusion y tensor-based reranking
+            fused = self.reciprocal_rank_fusion(vector_results, keyword_results, graph_results)
+            tensor_ranked = await self.tensor_reranker.rerank(query, fused)
+            final = await self.cross_encoder.rerank(query, tensor_ranked[:10])
+            return final
+3. Self-RAG Orchestrator (2025 State-of-the-art)
+pythonclass SelfRAGOrchestrator:
+    def __init__(self):
+        self.query_analyzer = QueryComplexityAnalyzer()
+        self.retrieval_critic = RetrievalCritic()
+        self.adaptive_retriever = AdaptiveRetriever()
+        self.generator = LLMGenerator()
+        self.response_evaluator = ResponseEvaluator()
+    
+    async def self_reflective_rag(self, query: str):
+        # 1. Analyze if retrieval is needed
+        needs_retrieval = await self.query_analyzer.needs_external_info(query)
+        
+        if not needs_retrieval:
+            return await self.generator.generate_direct(query)
+        
+        # 2. Dynamic retrieval with self-critique
+        context = []
+        for attempt in range(3):  # Max 3 retrieval attempts
+            retrieved = await self.adaptive_retriever.retrieve(query)
+            relevance_score = await self.retrieval_critic.evaluate(query, retrieved)
+            
+            if relevance_score > THRESHOLD:
+                context.extend(retrieved)
+                break
+            else:
+                # Reformulate query and try again
+                query = await self.query_analyzer.reformulate(query, retrieved)
+        
+        # 3. Generate with self-verification
+        response = await self.generator.generate(query, context)
+        confidence = await self.response_evaluator.assess_confidence(response, context)
+        
+        if confidence < CONFIDENCE_THRESHOLD:
+            # Trigger additional retrieval or mark as uncertain
+            additional_context = await self.adaptive_retriever.expand_search(query)
+            response = await self.generator.regenerate(query, context + additional_context)
+        
+        return SelfRAGResponse(
+            response=response,
+            context=context,
+            confidence=confidence,
+            retrieval_attempts=attempt + 1
+        )
+🎨 Interfaz de Usuario Propuesta
+Dashboard Principal
+
+Search Interface: búsqueda avanzada con filtros
+Document Library: gestión de documentos con metadata
+Pipeline Configurator: configuración de strategies RAG
+Evaluation Dashboard: métricas y performance
+Settings Panel: configuración de modelos y parámetros
+
+Características UX
+
+Real-time search con debouncing
+Streaming responses para LLM generation
+Citation highlighting en documentos fuente
+Query suggestions basadas en historial
+A/B testing interface para experimentación
+
+📊 Métricas y KPIs (2025 Enhanced)
+Retrieval Metrics
+
+Precision@K, Recall@K, F1@K, NDCG@K
+MRR (Mean Reciprocal Rank)
+Tensor reranking efficiency: ColBERT vs Cross-encoder latency
+Multi-modal retrieval accuracy: text-image alignment scores
+Graph traversal effectiveness: PageRank relevance scores
+
+Generation Metrics
+
+RAGAS framework: faithfulness, answer relevancy, context precision
+Self-RAG specific: confidence scores, retrieval attempt efficiency
+Multimodal coherence: vision-text response alignment
+Hallucination detection: fact-checking accuracy
+Citation quality: source attribution precision
+
+System Performance
+
+End-to-end latency: por RAG strategy (Naive vs Self vs Graph)
+Tensor operations: late-interaction computation efficiency
+Memory utilization: embedding storage optimization
+Cost tracking: tokens, API calls, compute resources por query type
+
+🚀 Roadmap de Desarrollo
+Phase 1: Core RAG + Self-RAG (Semanas 1-6)
+
+Document ingestion pipeline con multimodal support
+Basic vector search + ColBERT reranking
+Self-reflective RAG implementation
+REST API básica
+Tensor-based indexing setup
+
+Phase 2: Advanced Retrieval + GraphRAG (Semanas 7-12)
+
+Hybrid search implementation (vector + keyword + graph)
+Multiple embedding models + reranking strategies
+Fast GraphRAG integration
+RAG-Fusion implementation
+Query complexity analysis
+
+Phase 3: Multimodal + Agentic (Semanas 13-18)
+
+Vision-language model integration
+Multimodal document processing
+Agentic RAG components
+Advanced evaluation framework (RAGAS)
+Real-time knowledge graph updates
+
+Phase 4: Production + Optimization (Semanas 19-24)
+
+Frontend dashboard completo
+Kubernetes deployment
+CI/CD pipeline
+Performance optimization (caching, async)
+Documentation completa + benchmarking
+
+💡 Innovaciones Técnicas Cutting-Edge (2025)
+
+Self-Reflective RAG: sistemas que auto-evalúan y corrigen su retrieval process
+Tensor-based Reranking: ColBERT late-interaction para efficiency + accuracy
+Multimodal Integration: seamless text + vision processing
+Adaptive Query Complexity: dynamic strategy selection basada en query analysis
+Real-time Knowledge Graphs: auto-updating knowledge bases
+Agentic RAG: autonomous agents con tool integration
+Long RAG: processing de documentos extensos sin traditional chunking
+Corrective RAG: automatic error detection y correction
+Fast GraphRAG: PageRank-enhanced graph traversal
+RAG-Fusion: multi-query generation con reciprocal rank fusion
+Hybrid Architectures: combination de pre-trained + fine-tuned + retrieval + RL
+Federated RAG: búsqueda across múltiples knowledge bases distribuidas
+
+🔒 Consideraciones de Seguridad
+
+Authentication & Authorization: JWT + RBAC
+Data Privacy: encryption at rest y in transit
+API Rate Limiting: protección contra abuse
+Input Sanitization: prevención de prompt injection
+Audit Logging: trazabilidad completa
+
+📚 Deliverables Esperados (Production-Ready)
+
+Codebase completo siguiendo Clean Architecture:
+
+Domain models puros sin dependencies externas
+Application use cases con business logic
+Infrastructure implementations intercambiables
+Presentation layer con API REST + GraphQL
+
+
+Test suite comprehensivo (>90% coverage):
+
+Unit tests para domain logic
+Integration tests para infrastructure
+End-to-end tests para user scenarios
+Performance tests para critical paths
+Security tests para vulnerabilities
+
+
+Documentation técnica completa:
+
+Architecture Decision Records (ADRs)
+API documentation con OpenAPI
+Domain model documentation
+Deployment runbooks
+Troubleshooting guides
+
+
+Development environment:
+
+Docker Compose para local development
+Makefile con common commands
+Pre-commit hooks para code quality
+VS Code/PyCharm configuration
+Environment setup scripts
+
+
+Production deployment:
+
+Kubernetes manifests con Helm charts
+CI/CD pipelines con GitHub Actions
+Infrastructure as Code (Terraform)
+Monitoring y alerting setup
+Security scanning y compliance
+
+
+Performance benchmarks:
+
+Load testing results
+Latency measurements por RAG strategy
+Throughput analysis
+Resource utilization metrics
+Cost analysis per query
+
+
+Security implementation:
+
+Authentication & authorization
+API rate limiting
+Input validation y sanitization
+Secrets management
+Security audit compliance

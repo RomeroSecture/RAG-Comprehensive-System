@@ -1,0 +1,15 @@
+{
+  "session_id": "rag-session-20250110-1432",
+  "started_at": "2025-01-10T14:32:00Z",
+  "current_phase": "initialization",
+  "execution_history": [],
+  "pending_tasks": [],
+  "metrics": {
+    "coverage": 0,
+    "lines_of_code": 0,
+    "entities": 0,
+    "repositories": 0,
+    "use_cases": 0,
+    "endpoints": 0
+  }
+}
