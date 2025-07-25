@@ -25,6 +25,14 @@ class SemanticRetrievalStrategy(RetrievalStrategyService):
     
     def supports_strategy(self, strategy: RetrievalStrategy) -> bool:
         return strategy == RetrievalStrategy.SEMANTIC
+    
+    async def retrieve(self, query: Query, query_embedding: Optional[Embedding] = None) -> RetrievalResult:
+        """Execute semantic retrieval (placeholder implementation)."""
+        # This would connect to the actual vector store
+        return RetrievalResult(
+            query_id=query.id,
+            retrieval_strategy="semantic"
+        )
 
 
 class HybridRetrievalStrategy(RetrievalStrategyService):
@@ -32,6 +40,14 @@ class HybridRetrievalStrategy(RetrievalStrategyService):
     
     def supports_strategy(self, strategy: RetrievalStrategy) -> bool:
         return strategy == RetrievalStrategy.HYBRID
+    
+    async def retrieve(self, query: Query, query_embedding: Optional[Embedding] = None) -> RetrievalResult:
+        """Execute hybrid retrieval (placeholder implementation)."""
+        # This would combine semantic and keyword search
+        return RetrievalResult(
+            query_id=query.id,
+            retrieval_strategy="hybrid"
+        )
 
 
 class GraphRetrievalStrategy(RetrievalStrategyService):
@@ -39,6 +55,14 @@ class GraphRetrievalStrategy(RetrievalStrategyService):
     
     def supports_strategy(self, strategy: RetrievalStrategy) -> bool:
         return strategy == RetrievalStrategy.GRAPH
+    
+    async def retrieve(self, query: Query, query_embedding: Optional[Embedding] = None) -> RetrievalResult:
+        """Execute graph-based retrieval (placeholder implementation)."""
+        # This would query the knowledge graph
+        return RetrievalResult(
+            query_id=query.id,
+            retrieval_strategy="graph"
+        )
 
 
 class SelfRAGStrategy(RetrievalStrategyService):
@@ -46,6 +70,14 @@ class SelfRAGStrategy(RetrievalStrategyService):
     
     def supports_strategy(self, strategy: RetrievalStrategy) -> bool:
         return strategy == RetrievalStrategy.SELF_RAG
+    
+    async def retrieve(self, query: Query, query_embedding: Optional[Embedding] = None) -> RetrievalResult:
+        """Execute Self-RAG retrieval (placeholder implementation)."""
+        # This would implement self-reflective retrieval
+        return RetrievalResult(
+            query_id=query.id,
+            retrieval_strategy="self_rag"
+        )
 
 
 class RetrievalStrategyFactory:

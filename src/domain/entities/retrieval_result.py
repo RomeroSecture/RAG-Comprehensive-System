@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
-from datetime import datetime
-from typing import Dict, List, Optional
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional
 from uuid import UUID, uuid4
 
 
@@ -12,12 +12,12 @@ class RetrievedDocument:
     document_id: UUID = field(default_factory=uuid4)
     chunk_id: Optional[UUID] = None
     content: str = ""
-    metadata: Dict[str, any] = field(default_factory=dict)
+    metadata: Dict[str, Any] = field(default_factory=dict)
     score: float = 0.0
     source: str = ""
     retrieval_method: str = ""
     rerank_score: Optional[float] = None
-    created_at: datetime = field(default_factory=datetime.utcnow)
+    created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     
     def __post_init__(self):
         if not self.content:
@@ -37,7 +37,7 @@ class RetrievedDocument:
         """Get the final score (rerank if available, otherwise original)."""
         return self.rerank_score if self.rerank_score is not None else self.score
     
-    def to_dict(self) -> Dict[str, any]:
+    def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
         return {
             "id": str(self.id),
@@ -63,8 +63,8 @@ class RetrievalResult:
     retrieval_strategy: str = ""
     retrieval_time_ms: float = 0.0
     reranking_time_ms: Optional[float] = None
-    metadata: Dict[str, any] = field(default_factory=dict)
-    created_at: datetime = field(default_factory=datetime.utcnow)
+    metadata: Dict[str, Any] = field(default_factory=dict)
+    created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     
     def __post_init__(self):
         self.total_results = len(self.documents)
@@ -117,7 +117,7 @@ class SelfRAGResult(RetrievalResult):
     confidence_score: float = 0.0
     retrieval_attempts: int = 1
     reformulated_queries: List[str] = field(default_factory=list)
-    retrieval_decisions: List[Dict[str, any]] = field(default_factory=list)
+    retrieval_decisions: List[Dict[str, Any]] = field(default_factory=list)
     needs_additional_retrieval: bool = False
     
     def __post_init__(self):
@@ -126,11 +126,11 @@ class SelfRAGResult(RetrievalResult):
         if not 0 <= self.confidence_score <= 1:
             raise ValueError("Confidence score must be between 0 and 1")
     
-    def add_retrieval_decision(self, decision: Dict[str, any]) -> None:
+    def add_retrieval_decision(self, decision: Dict[str, Any]) -> None:
         """Add a retrieval decision made during Self-RAG process."""
         self.retrieval_decisions.append({
             **decision,
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat()
         })
     
     def mark_low_confidence(self) -> None:

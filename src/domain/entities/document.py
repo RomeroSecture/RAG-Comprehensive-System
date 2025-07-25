@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional
 from uuid import UUID, uuid4
 
@@ -13,8 +13,8 @@ class Document:
     metadata: Dict[str, any] = field(default_factory=dict)
     source: str = ""
     file_type: str = ""
-    created_at: datetime = field(default_factory=datetime.utcnow)
-    updated_at: datetime = field(default_factory=datetime.utcnow)
+    created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     language: Optional[str] = None
     chunk_ids: List[UUID] = field(default_factory=list)
     embedding_model: Optional[str] = None
@@ -35,24 +35,24 @@ class Document:
     def update_metadata(self, new_metadata: Dict[str, any]) -> None:
         """Update document metadata."""
         self.metadata.update(new_metadata)
-        self.updated_at = datetime.utcnow()
+        self.updated_at = datetime.now(timezone.utc)
     
     def mark_as_processed(self) -> None:
         """Mark document as successfully processed."""
         self.processing_status = "completed"
-        self.updated_at = datetime.utcnow()
+        self.updated_at = datetime.now(timezone.utc)
     
     def mark_as_failed(self, error_message: str) -> None:
         """Mark document as failed to process."""
         self.processing_status = "error"
         self.error_message = error_message
-        self.updated_at = datetime.utcnow()
+        self.updated_at = datetime.now(timezone.utc)
     
     def add_chunk_id(self, chunk_id: UUID) -> None:
         """Add a chunk ID to the document."""
         if chunk_id not in self.chunk_ids:
             self.chunk_ids.append(chunk_id)
-            self.updated_at = datetime.utcnow()
+            self.updated_at = datetime.now(timezone.utc)
 
 
 @dataclass
@@ -67,7 +67,7 @@ class DocumentChunk:
     start_char: int = 0
     end_char: int = 0
     embedding_id: Optional[UUID] = None
-    created_at: datetime = field(default_factory=datetime.utcnow)
+    created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     
     def __post_init__(self):
         if not self.content:

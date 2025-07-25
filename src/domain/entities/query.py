@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Dict, List, Optional
 from uuid import UUID, uuid4
@@ -51,7 +51,7 @@ class Query:
     include_metadata: bool = True
     language: Optional[str] = None
     filters: Dict[str, any] = field(default_factory=dict)
-    created_at: datetime = field(default_factory=datetime.utcnow)
+    created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     
     def __post_init__(self):
         if not self.text:
@@ -97,7 +97,7 @@ class EnhancedQuery:
     hypothetical_answer: Optional[str] = None
     entities: List[Dict[str, str]] = field(default_factory=list)
     keywords: List[str] = field(default_factory=list)
-    created_at: datetime = field(default_factory=datetime.utcnow)
+    created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     
     def add_expansion(self, expanded_text: str) -> None:
         """Add an expanded query variant."""
